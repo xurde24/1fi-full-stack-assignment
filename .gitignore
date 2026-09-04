@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.*
+!.env.example
+
+dist/
+build/
+
+client/dist/
+server/dist/
+
+server/src/generated/prisma/
+npm-test/

@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  variants    Variant[]
+  emiPlans    EmiPlan[]
+}
+
+model Variant {
+  id          String   @id @default(cuid())
+  productId   String
+  color       String
+  storage     String
+  price       Int
+  mrp         Int
+  imageUrl    String
+
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, color, storage])
+}
+
+model EmiPlan {
+  id             String   @id @default(cuid())
+  productId      String
+  monthlyPayment Int
+  tenureMonths   Int
+  interestRate   Float
+  cashback       Int
+
+  product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
