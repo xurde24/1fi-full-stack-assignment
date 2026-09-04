@@ -1,12 +1,20 @@
 import "dotenv/config";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../src/generated/prisma/client";
+import { PrismaNeon } from "@prisma/adapter-neon";
+import { PrismaClient } from "../src/generated/prisma/client.js";
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL!,
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error("DATABASE_URL is not defined");
+}
+
+const adapter = new PrismaNeon({
+  connectionString,
 });
 
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient({
+  adapter,
+});
 
 async function main() {
   console.log("🌱 Starting database seed...");
@@ -34,21 +42,21 @@ async function main() {
             storage: "256GB",
             price: 129900,
             mrp: 134900,
-            imageUrl: "/images/iphone-17-pro.jpg",
+            imageUrl: "/images/iphone-17-pro-space-black.jpg",
           },
           {
             color: "Silver",
             storage: "256GB",
             price: 129900,
             mrp: 134900,
-            imageUrl: "/images/iphone-17-pro.jpg",
+            imageUrl: "/images/iphone-17-pro-silver.jpg",
           },
           {
             color: "Deep Blue",
             storage: "512GB",
             price: 149900,
             mrp: 154900,
-            imageUrl: "/images/iphone-17-pro.jpg",
+            imageUrl: "/images/iphone-17-pro-deep-blue.jpg",
           },
         ],
       },
@@ -96,21 +104,21 @@ async function main() {
             storage: "256GB",
             price: 119999,
             mrp: 129999,
-            imageUrl: "/images/samsung-s24-ultra.jpg",
+            imageUrl: "/images/samsung-s24-ultra-titanium-black.jpg",
           },
           {
             color: "Titanium Gray",
             storage: "512GB",
             price: 129999,
             mrp: 139999,
-            imageUrl: "/images/samsung-s24-ultra.jpg",
+            imageUrl: "/images/samsung-s24-ultra-titanium-gray.jpg",
           },
           {
             color: "Titanium Blue",
             storage: "1TB",
             price: 149999,
             mrp: 159999,
-            imageUrl: "/images/samsung-s24-ultra.jpg",
+            imageUrl: "/images/samsung-s24-ultra-titanium-blue.jpg",
           },
         ],
       },
@@ -158,21 +166,21 @@ async function main() {
             storage: "256GB",
             price: 69999,
             mrp: 74999,
-            imageUrl: "/images/oneplus-13.jpg",
+            imageUrl: "/images/oneplus-13-midnight-black.jpg",
           },
           {
             color: "Arctic Dawn",
             storage: "256GB",
             price: 69999,
             mrp: 74999,
-            imageUrl: "/images/oneplus-13.jpg",
+            imageUrl: "/images/oneplus-13-arctic-dawn.jpg",
           },
           {
             color: "Blue",
             storage: "512GB",
             price: 79999,
             mrp: 84999,
-            imageUrl: "/images/oneplus-13.jpg",
+            imageUrl: "/images/oneplus-13-blue.jpg",
           },
         ],
       },
