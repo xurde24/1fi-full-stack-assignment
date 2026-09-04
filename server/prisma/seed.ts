@@ -19,14 +19,10 @@ const prisma = new PrismaClient({
 async function main() {
   console.log("🌱 Starting database seed...");
 
-  // Clear existing data
   await prisma.emiPlan.deleteMany();
   await prisma.variant.deleteMany();
   await prisma.product.deleteMany();
 
-  // --------------------------------------------------
-  // iPhone 17 Pro
-  // --------------------------------------------------
 
   await prisma.product.create({
     data: {
@@ -86,9 +82,6 @@ async function main() {
     },
   });
 
-  // --------------------------------------------------
-  // Samsung Galaxy S24 Ultra
-  // --------------------------------------------------
 
   await prisma.product.create({
     data: {
@@ -148,9 +141,6 @@ async function main() {
     },
   });
 
-  // --------------------------------------------------
-  // OnePlus 13
-  // --------------------------------------------------
 
   await prisma.product.create({
     data: {

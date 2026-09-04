@@ -44,10 +44,6 @@ function CheckoutPage() {
   const formatPrice = (value: number) =>
     `₹${value.toLocaleString("en-IN")}`;
 
-  /*
-   * Save the selected checkout data so that refreshing
-   * /checkout does not immediately lose the selection.
-   */
   useEffect(() => {
     if (!state) return;
 
@@ -57,10 +53,6 @@ function CheckoutPage() {
     );
   }, [state]);
 
-  /*
-   * If React Router gives us new checkout state,
-   * update our local state as well.
-   */
   useEffect(() => {
     if (routerState) {
       setState(routerState);
@@ -209,7 +201,6 @@ function CheckoutPage() {
 
   return (
     <main className="min-h-screen bg-slate-50">
-      {/* Header */}
 
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
@@ -232,10 +223,8 @@ function CheckoutPage() {
         </div>
       </header>
 
-      {/* Main */}
 
       <div className="mx-auto max-w-6xl px-5 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
-        {/* Breadcrumb */}
 
         <div className="mb-8 flex items-center gap-2 text-sm">
           <Link
@@ -252,7 +241,6 @@ function CheckoutPage() {
           </span>
         </div>
 
-        {/* Heading */}
 
         <div className="mb-8">
           <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-blue-600">
@@ -269,7 +257,6 @@ function CheckoutPage() {
           </p>
         </div>
 
-        {/* Checkout progress */}
 
         <div className="mb-8 hidden items-center sm:flex">
           <div className="flex items-center gap-2">
@@ -307,10 +294,8 @@ function CheckoutPage() {
           </div>
         </div>
 
-        {/* Main layout */}
 
         <div className="grid items-start gap-6 lg:grid-cols-[1fr_400px]">
-          {/* Product */}
 
           <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
             <div className="border-b border-slate-100 px-6 py-5 sm:px-7">
@@ -366,7 +351,6 @@ function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Highlights */}
 
               <div className="mt-7 grid grid-cols-1 gap-3 border-t border-slate-100 pt-6 sm:grid-cols-3">
                 <div className="rounded-2xl bg-slate-50 p-4">
@@ -408,7 +392,6 @@ function CheckoutPage() {
             </div>
           </section>
 
-          {/* EMI */}
 
           <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
             <div className="border-b border-slate-100 px-6 py-5">
@@ -492,7 +475,6 @@ function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Cashback */}
 
               <div className="mt-2 flex items-start gap-3 rounded-2xl border border-green-100 bg-green-50 p-4">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-100 text-sm">
@@ -511,7 +493,6 @@ function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Demo payment */}
 
               <button
                 type="button"
@@ -529,7 +510,6 @@ function CheckoutPage() {
           </section>
         </div>
 
-        {/* Trust cards */}
 
         <div className="mt-6 grid gap-3 sm:grid-cols-3">
           <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -581,7 +561,6 @@ function CheckoutPage() {
           </div>
         </div>
 
-        {/* Back */}
 
         <div className="mt-7">
           <button

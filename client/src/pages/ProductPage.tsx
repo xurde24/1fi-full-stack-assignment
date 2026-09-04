@@ -45,11 +45,6 @@ function ProductPage() {
     loadProduct();
   }, [slug]);
 
-  /*
-   * Every time we open a product page, start at the top.
-   * This prevents the browser from remembering the previous
-   * scroll position.
-   */
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -58,20 +53,10 @@ function ProductPage() {
     });
   }, [slug]);
 
-  /*
-   * Go to homepage hero.
-   *
-   * Using a normal browser navigation here intentionally
-   * guarantees that "/" is loaded without "#products".
-   */
   const goHome = () => {
     window.location.href = "/";
   };
 
-  /*
-   * Go specifically to the smartphone/product section
-   * on the homepage.
-   */
   const goToProducts = () => {
     window.location.href = "/#products";
   };
@@ -148,11 +133,9 @@ function ProductPage() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      {/* ================= HEADER ================= */}
 
       <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          {/* 1Fi → HOME HERO */}
 
           <button
             type="button"
@@ -162,7 +145,6 @@ function ProductPage() {
             1Fi
           </button>
 
-          {/* ALL PRODUCTS → THREE PHONE SECTION */}
 
           <button
             type="button"
@@ -175,13 +157,11 @@ function ProductPage() {
       </header>
 
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-10">
-        {/* ================= BREADCRUMBS ================= */}
 
         <nav
           className="mb-8 flex flex-wrap items-center gap-2 text-sm"
           aria-label="Breadcrumb"
         >
-          {/* HOME → HOMEPAGE HERO */}
 
           <button
             type="button"
@@ -193,7 +173,6 @@ function ProductPage() {
 
           <span className="text-slate-300">/</span>
 
-          {/* SMARTPHONE → HOMEPAGE PRODUCT SECTION */}
 
           <button
             type="button"
@@ -205,17 +184,14 @@ function ProductPage() {
 
           <span className="text-slate-300">/</span>
 
-          {/* CURRENT PRODUCT */}
 
           <span className="font-semibold text-slate-900">
             {product.name}
           </span>
         </nav>
 
-        {/* ================= PRODUCT ================= */}
 
         <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-          {/* ================= LEFT ================= */}
 
           <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
             <div className="flex h-[380px] items-center justify-center rounded-xl bg-gray-50 p-8 sm:h-[520px]">
@@ -228,7 +204,6 @@ function ProductPage() {
               )}
             </div>
 
-            {/* IMAGE THUMBNAILS */}
 
             <div className="mt-4 flex gap-3 overflow-x-auto">
               {product.variants.map((variant) => {
@@ -256,7 +231,6 @@ function ProductPage() {
             </div>
           </section>
 
-          {/* ================= RIGHT ================= */}
 
           <section className="lg:sticky lg:top-24 lg:self-start">
             <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
@@ -272,7 +246,6 @@ function ProductPage() {
                 {product.description}
               </p>
 
-              {/* PRICE */}
 
               {selectedVariant && (
                 <div className="mt-6 border-b border-gray-200 pb-6">
@@ -312,7 +285,6 @@ function ProductPage() {
                 </div>
               )}
 
-              {/* VARIANTS */}
 
               <div className="mt-6">
                 <div className="flex items-center justify-between">
@@ -369,7 +341,6 @@ function ProductPage() {
                 </div>
               </div>
 
-              {/* EMI */}
 
               <div className="mt-8">
                 <h2 className="font-semibold text-gray-900">
@@ -433,7 +404,6 @@ function ProductPage() {
                 </div>
               </div>
 
-              {/* PROCEED */}
 
               <button
                 type="button"
@@ -463,7 +433,6 @@ function ProductPage() {
               </button>
             </div>
 
-            {/* TRUST */}
 
             <div className="mt-4 grid grid-cols-3 gap-3">
               <div className="rounded-xl border border-gray-200 bg-white p-4 text-center">

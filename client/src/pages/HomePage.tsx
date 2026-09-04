@@ -66,7 +66,6 @@ function HomePage() {
   return (
     <main className="min-h-screen bg-white text-slate-900">
 
-      {/* ================= HEADER ================= */}
 
       <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
@@ -117,7 +116,6 @@ function HomePage() {
         </div>
       </header>
 
-      {/* ================= HERO ================= */}
 
       <section
         id="hero"
@@ -203,7 +201,6 @@ function HomePage() {
 
           </div>
 
-          {/* FEATURED PHONE */}
 
           <div className="relative mx-auto w-full max-w-xl">
 
@@ -361,7 +358,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ================= BENEFITS ================= */}
 
       <section
         id="benefits"
@@ -426,7 +422,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ================= PRODUCTS ================= */}
 
       <section
         id="products"
@@ -461,7 +456,6 @@ function HomePage() {
 
           </div>
 
-          {/* LOADING */}
 
           {loading && (
             <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -491,7 +485,6 @@ function HomePage() {
             </div>
           )}
 
-          {/* ERROR */}
 
           {!loading && error && (
             <div className="mt-10 rounded-[28px] border border-red-100 bg-white p-10 text-center shadow-sm">
@@ -519,7 +512,6 @@ function HomePage() {
             </div>
           )}
 
-          {/* EMPTY */}
 
           {!loading && !error && products.length === 0 && (
             <div className="mt-10 rounded-[28px] border border-slate-200 bg-white p-10 text-center shadow-sm">
@@ -539,7 +531,6 @@ function HomePage() {
             </div>
           )}
 
-          {/* PRODUCT CARDS */}
 
           {!loading && !error && products.length > 0 && (
             <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -562,7 +553,6 @@ function HomePage() {
                     className="group overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-blue-100 hover:shadow-[0_22px_50px_rgba(15,23,42,0.10)]"
                   >
 
-                    {/* IMAGE */}
 
                     <Link
                       to={`/products/${product.slug}`}
@@ -587,7 +577,6 @@ function HomePage() {
 
                     </Link>
 
-                    {/* DETAILS */}
 
                     <div className="p-6">
 
@@ -599,7 +588,6 @@ function HomePage() {
                         {product.name}
                       </h3>
 
-                      {/* PRICE */}
 
                       <div className="mt-5">
 
@@ -634,7 +622,6 @@ function HomePage() {
 
                       </div>
 
-                      {/* EMI */}
 
                       {emi && (
                         <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50/70 p-4">
@@ -695,7 +682,6 @@ function HomePage() {
                         </div>
                       )}
 
-                      {/* BUTTON */}
 
                       <Link
                         to={`/products/${product.slug}`}
@@ -719,7 +705,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ================= HOW IT WORKS ================= */}
 
       <section
         id="how-it-works"
@@ -809,7 +794,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ================= CTA ================= */}
 
       <section className="px-5 pb-16 sm:px-6 lg:px-8 lg:pb-20">
 
@@ -846,7 +830,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ================= FOOTER ================= */}
 
       <footer className="border-t border-slate-800 bg-slate-950 text-white">
 
