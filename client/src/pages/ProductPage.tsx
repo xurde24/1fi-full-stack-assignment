@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getProductBySlug } from "../services/api";
 import type { EmiPlan, Product, Variant } from "../types/product";
 
@@ -28,12 +28,48 @@ function ProductPage() {
 
         setProduct(data);
 
+        const storageKey = `onefi_product_selection_${slug}`;
+        const savedSelection = localStorage.getItem(storageKey);
+
+        let savedVariantId: string | null = null;
+        let savedPlanId: string | null = null;
+
+        if (savedSelection) {
+          try {
+            const parsed = JSON.parse(savedSelection);
+
+            savedVariantId =
+              typeof parsed.variantId === "string"
+                ? parsed.variantId
+                : null;
+
+            savedPlanId =
+              typeof parsed.planId === "string"
+                ? parsed.planId
+                : null;
+          } catch {
+            localStorage.removeItem(storageKey);
+          }
+        }
+
+        const savedVariant = data.variants.find(
+          (variant) => variant.id === savedVariantId,
+        );
+
+        const savedPlan = data.emiPlans.find(
+          (plan) => plan.id === savedPlanId,
+        );
+
         if (data.variants.length > 0) {
-          setSelectedVariant(data.variants[0]);
+          setSelectedVariant(savedVariant || data.variants[0]);
+        } else {
+          setSelectedVariant(null);
         }
 
         if (data.emiPlans.length > 0) {
-          setSelectedPlan(data.emiPlans[0]);
+          setSelectedPlan(savedPlan || data.emiPlans[0]);
+        } else {
+          setSelectedPlan(null);
         }
       } catch {
         setError("Unable to load product.");
@@ -46,20 +82,24 @@ function ProductPage() {
   }, [slug]);
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "instant",
-    });
+    window.scrollTo(0, 0);
   }, [slug]);
 
-  const goHome = () => {
-    window.location.href = "/";
-  };
+  useEffect(() => {
+    if (!slug || !selectedVariant || !selectedPlan) {
+      return;
+    }
 
-  const goToProducts = () => {
-    window.location.href = "/#products";
-  };
+    const storageKey = `onefi_product_selection_${slug}`;
+
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        variantId: selectedVariant.id,
+        planId: selectedPlan.id,
+      }),
+    );
+  }, [slug, selectedVariant, selectedPlan]);
 
   if (loading) {
     return (
@@ -118,80 +158,83 @@ function ProductPage() {
   if (error || !product) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-gray-50">
-        <p className="text-red-500">{error || "Product not found."}</p>
+        <p className="text-red-500">
+          {error || "Product not found."}
+        </p>
 
-        <button
-          type="button"
-          onClick={goToProducts}
-          className="rounded-lg bg-blue-600 px-5 py-2 font-medium text-white transition hover:bg-blue-700"
+        <a
+          href="/#products"
+          className="rounded-lg bg-blue-600 px-5 py-2 font-medium text-white"
         >
           Back to products
-        </button>
+        </a>
       </div>
     );
   }
 
   return (
     <main className="min-h-screen bg-gray-50">
-
-      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur">
+     
+      <header className="border-b border-gray-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          
 
-          <button
-            type="button"
-            onClick={goHome}
-            className="text-2xl font-black tracking-tight text-blue-600 transition hover:opacity-80"
+          <Link
+            to="/"
+            className="text-2xl font-bold text-blue-600"
           >
             1Fi
-          </button>
+          </Link>
 
+          
 
-          <button
-            type="button"
-            onClick={goToProducts}
-            className="text-sm font-semibold text-gray-600 transition hover:text-blue-600"
+          <a
+            href="/#products"
+            className="text-sm font-medium text-gray-600 transition hover:text-blue-600"
           >
             All Products
-          </button>
+          </a>
         </div>
       </header>
 
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-10">
+       
+        <nav className="mb-8 flex flex-wrap items-center gap-2 text-sm">
+         
 
-        <nav
-          className="mb-8 flex flex-wrap items-center gap-2 text-sm"
-          aria-label="Breadcrumb"
-        >
-
-          <button
-            type="button"
-            onClick={goHome}
+          <Link
+            to="/"
             className="font-medium text-slate-400 transition hover:text-blue-600"
           >
             Home
-          </button>
+          </Link>
 
-          <span className="text-slate-300">/</span>
+          <span className="text-slate-300">
+            /
+          </span>
 
+          
 
-          <button
-            type="button"
-            onClick={goToProducts}
+          <a
+            href="/#products"
             className="font-medium text-slate-500 transition hover:text-blue-600"
           >
             Smartphone
-          </button>
+          </a>
 
-          <span className="text-slate-300">/</span>
+          <span className="text-slate-300">
+            /
+          </span>
 
+         
 
           <span className="font-semibold text-slate-900">
             {product.name}
           </span>
         </nav>
 
-
         <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+         
 
           <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
             <div className="flex h-[380px] items-center justify-center rounded-xl bg-gray-50 p-8 sm:h-[520px]">
@@ -204,10 +247,12 @@ function ProductPage() {
               )}
             </div>
 
+            
 
             <div className="mt-4 flex gap-3 overflow-x-auto">
               {product.variants.map((variant) => {
-                const isSelected = selectedVariant?.id === variant.id;
+                const isSelected =
+                  selectedVariant?.id === variant.id;
 
                 return (
                   <button
@@ -231,8 +276,9 @@ function ProductPage() {
             </div>
           </section>
 
+          
 
-          <section className="lg:sticky lg:top-24 lg:self-start">
+          <section className="lg:sticky lg:top-6 lg:self-start">
             <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
               <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
                 Smartphone
@@ -246,26 +292,28 @@ function ProductPage() {
                 {product.description}
               </p>
 
-
+              
               {selectedVariant && (
                 <div className="mt-6 border-b border-gray-200 pb-6">
-                  <p className="text-sm text-gray-500">Selling price</p>
+                  <p className="text-sm text-gray-500">
+                    Selling price
+                  </p>
 
                   <div className="mt-1 flex flex-wrap items-center gap-3">
                     <span className="text-3xl font-bold text-gray-900">
                       ₹{selectedVariant.price.toLocaleString("en-IN")}
                     </span>
 
-                    {selectedVariant.mrp > selectedVariant.price && (
-                      <span className="text-lg text-gray-400 line-through">
-                        ₹{selectedVariant.mrp.toLocaleString("en-IN")}
-                      </span>
-                    )}
+                    <span className="text-lg text-gray-400 line-through">
+                      ₹{selectedVariant.mrp.toLocaleString("en-IN")}
+                    </span>
 
-                    {selectedVariant.mrp > selectedVariant.price && (
+                    {selectedVariant.mrp >
+                      selectedVariant.price && (
                       <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
                         {Math.round(
-                          ((selectedVariant.mrp - selectedVariant.price) /
+                          ((selectedVariant.mrp -
+                            selectedVariant.price) /
                             selectedVariant.mrp) *
                             100,
                         )}
@@ -274,17 +322,17 @@ function ProductPage() {
                     )}
                   </div>
 
-                  {selectedVariant.mrp > selectedVariant.price && (
-                    <p className="mt-2 text-sm font-medium text-green-600">
-                      You save ₹
-                      {(
-                        selectedVariant.mrp - selectedVariant.price
-                      ).toLocaleString("en-IN")}
-                    </p>
-                  )}
+                  <p className="mt-2 text-sm font-medium text-green-600">
+                    You save ₹
+                    {(
+                      selectedVariant.mrp -
+                      selectedVariant.price
+                    ).toLocaleString("en-IN")}
+                  </p>
                 </div>
               )}
 
+              
 
               <div className="mt-6">
                 <div className="flex items-center justify-between">
@@ -301,13 +349,16 @@ function ProductPage() {
 
                 <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {product.variants.map((variant) => {
-                    const isSelected = selectedVariant?.id === variant.id;
+                    const isSelected =
+                      selectedVariant?.id === variant.id;
 
                     return (
                       <button
                         key={variant.id}
                         type="button"
-                        onClick={() => setSelectedVariant(variant)}
+                        onClick={() =>
+                          setSelectedVariant(variant)
+                        }
                         className={`rounded-xl border-2 p-4 text-left transition ${
                           isSelected
                             ? "border-blue-600 bg-blue-50"
@@ -341,6 +392,7 @@ function ProductPage() {
                 </div>
               </div>
 
+              
 
               <div className="mt-8">
                 <h2 className="font-semibold text-gray-900">
@@ -353,13 +405,16 @@ function ProductPage() {
 
                 <div className="mt-4 space-y-3">
                   {product.emiPlans.map((plan) => {
-                    const isSelected = selectedPlan?.id === plan.id;
+                    const isSelected =
+                      selectedPlan?.id === plan.id;
 
                     return (
                       <button
                         key={plan.id}
                         type="button"
-                        onClick={() => setSelectedPlan(plan)}
+                        onClick={() =>
+                          setSelectedPlan(plan)
+                        }
                         className={`w-full rounded-xl border-2 p-4 text-left transition ${
                           isSelected
                             ? "border-blue-600 bg-blue-50"
@@ -370,7 +425,10 @@ function ProductPage() {
                           <div>
                             <p className="text-xl font-bold text-gray-900">
                               ₹
-                              {plan.monthlyPayment.toLocaleString("en-IN")}
+                              {plan.monthlyPayment.toLocaleString(
+                                "en-IN",
+                              )}
+
                               <span className="text-sm font-normal text-gray-500">
                                 {" "}
                                 / month
@@ -394,7 +452,10 @@ function ProductPage() {
                           <div className="mt-3">
                             <span className="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
                               ₹
-                              {plan.cashback.toLocaleString("en-IN")} cashback
+                              {plan.cashback.toLocaleString(
+                                "en-IN",
+                              )}{" "}
+                              cashback
                             </span>
                           </div>
                         )}
@@ -404,7 +465,7 @@ function ProductPage() {
                 </div>
               </div>
 
-
+             
               <button
                 type="button"
                 disabled={!selectedVariant || !selectedPlan}
@@ -419,9 +480,12 @@ function ProductPage() {
                       variantColor: selectedVariant.color,
                       storage: selectedVariant.storage,
                       price: selectedVariant.price,
-                      monthlyPayment: selectedPlan.monthlyPayment,
-                      tenureMonths: selectedPlan.tenureMonths,
-                      interestRate: selectedPlan.interestRate,
+                      monthlyPayment:
+                        selectedPlan.monthlyPayment,
+                      tenureMonths:
+                        selectedPlan.tenureMonths,
+                      interestRate:
+                        selectedPlan.interestRate,
                       cashback: selectedPlan.cashback,
                       imageUrl: selectedVariant.imageUrl,
                     },
@@ -433,10 +497,12 @@ function ProductPage() {
               </button>
             </div>
 
+            
 
             <div className="mt-4 grid grid-cols-3 gap-3">
               <div className="rounded-xl border border-gray-200 bg-white p-4 text-center">
                 <p className="text-lg">💳</p>
+
                 <p className="mt-1 text-xs font-medium text-gray-600">
                   Easy EMI
                 </p>
@@ -444,6 +510,7 @@ function ProductPage() {
 
               <div className="rounded-xl border border-gray-200 bg-white p-4 text-center">
                 <p className="text-lg">🔒</p>
+
                 <p className="mt-1 text-xs font-medium text-gray-600">
                   Secure
                 </p>
@@ -451,6 +518,7 @@ function ProductPage() {
 
               <div className="rounded-xl border border-gray-200 bg-white p-4 text-center">
                 <p className="text-lg">🎁</p>
+
                 <p className="mt-1 text-xs font-medium text-gray-600">
                   Cashback
                 </p>
