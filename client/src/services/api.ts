@@ -1,6 +1,12 @@
-const API_URL = "http://localhost:5000/api";
+import type { Product } from "../types/product";
 
-export async function getProducts() {
+const API_URL = import.meta.env.VITE_API_URL;
+
+if (!API_URL) {
+  throw new Error("VITE_API_URL is not configured");
+}
+
+export async function getProducts(): Promise<Product[]> {
   const response = await fetch(`${API_URL}/products`);
 
   if (!response.ok) {
@@ -10,7 +16,7 @@ export async function getProducts() {
   return response.json();
 }
 
-export async function getProductBySlug(slug: string) {
+export async function getProductBySlug(slug: string): Promise<Product> {
   const response = await fetch(`${API_URL}/products/${slug}`);
 
   if (!response.ok) {
