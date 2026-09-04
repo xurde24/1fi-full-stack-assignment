@@ -2,12 +2,44 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Preload product images so they are ready before API data arrives -->
+    <link
+      rel="preload"
+      as="image"
+      href="/images/iphone-17-pro.jpg"
+      fetchpriority="high"
+    />
+
+    <link
+      rel="preload"
+      as="image"
+      href="/images/samsung-s24-ultra.jpg"
+      fetchpriority="high"
+    />
+
+    <link
+      rel="preload"
+      as="image"
+      href="/images/oneplus-13.jpg"
+      fetchpriority="high"
+    />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>client</title>
+
+    <meta
+      name="description"
+      content="Shop smartphones with flexible EMI plans and cashback offers."
+    />
+
+    <title>1Fi — Smartphones on Easy EMI</title>
   </head>
+
   <body>
     <div id="root"></div>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

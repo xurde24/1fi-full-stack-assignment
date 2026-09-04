@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 interface CheckoutState {
   productName: string;
@@ -14,155 +14,449 @@ interface CheckoutState {
 
 function CheckoutPage() {
   const location = useLocation();
-
+  const navigate = useNavigate();
   const state = location.state as CheckoutState | null;
 
+  const formatPrice = (value: number) =>
+    `₹${value.toLocaleString("en-IN")}`;
+
+  // No product / EMI selection
   if (!state) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-gray-50 px-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">
-            No EMI selection found
-          </h1>
+      <main className="min-h-screen bg-slate-50">
+        <header className="border-b border-slate-200 bg-white">
+          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+            <Link
+              to="/"
+              className="text-2xl font-extrabold tracking-tight text-blue-600"
+            >
+              1Fi
+            </Link>
 
-          <p className="mt-2 text-gray-500">
-            Please select a product and EMI plan first.
-          </p>
+            <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
+              <span>EMI Checkout</span>
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-green-50 text-xs font-bold text-green-600">
+                ✓
+              </span>
+            </div>
+          </div>
+        </header>
 
-          <Link
-            to="/"
-            className="mt-6 inline-block rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
-          >
-            Browse products
-          </Link>
+        <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-5">
+          <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-2xl">
+              🛒
+            </div>
+
+            <h1 className="mt-6 text-2xl font-bold tracking-tight text-slate-900">
+              No EMI selection found
+            </h1>
+
+            <p className="mt-3 text-sm leading-6 text-slate-500">
+              Please choose a product and EMI plan before continuing to
+              checkout.
+            </p>
+
+            <Link
+              to="/"
+              className="mt-7 inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+            >
+              Browse products
+            </Link>
+          </div>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link to="/" className="text-2xl font-bold text-blue-600">
+      <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+          <Link
+            to="/"
+            className="text-2xl font-extrabold tracking-tight text-blue-600"
+          >
             1Fi
           </Link>
 
-          <span className="text-sm font-medium text-gray-500">
-            EMI Checkout
-          </span>
+          <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
+            <span className="hidden sm:inline">Secure checkout</span>
+
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-green-50 text-xs font-bold text-green-600">
+              ✓
+            </span>
+          </div>
         </div>
       </header>
 
-      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:py-12">
+      {/* Main content */}
+      <div className="mx-auto max-w-6xl px-5 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
+        {/* Breadcrumb */}
+        <div className="mb-8 flex items-center gap-2 text-sm">
+          <Link
+            to="/"
+            className="text-slate-500 transition hover:text-blue-600"
+          >
+            Home
+          </Link>
+
+          <span className="text-slate-300">/</span>
+
+          <span className="font-medium text-slate-900">
+            Checkout
+          </span>
+        </div>
+
         {/* Heading */}
         <div className="mb-8">
-          <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-blue-600">
+            <span className="h-1.5 w-1.5 rounded-full bg-blue-600" />
             Almost there
-          </p>
+          </div>
 
-          <h1 className="mt-2 text-3xl font-bold text-gray-900 sm:text-4xl">
-            Review your EMI selection
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+            Review your order
           </h1>
 
-          <p className="mt-2 text-gray-600">
-            Check your phone and payment plan before continuing.
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
+            Confirm your product and EMI plan before continuing.
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_0.8fr]">
-          {/* Product */}
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Your product
-            </h2>
+        {/* Checkout progress */}
+        <div className="mb-8 hidden items-center sm:flex">
+          {/* Step 1 */}
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
+              ✓
+            </div>
 
-            <div className="mt-6 flex gap-5">
-              <div className="flex h-32 w-28 shrink-0 items-center justify-center rounded-xl bg-gray-100 p-3">
-                <img
-                  src={state.imageUrl}
-                  alt={state.productName}
-                  className="h-full w-full object-contain"
-                />
+            <span className="text-sm font-semibold text-slate-900">
+              Product
+            </span>
+          </div>
+
+          <div className="mx-4 h-px w-16 bg-blue-200" />
+
+          {/* Step 2 */}
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
+              2
+            </div>
+
+            <span className="text-sm font-semibold text-slate-900">
+              Review
+            </span>
+          </div>
+
+          <div className="mx-4 h-px w-16 bg-slate-200" />
+
+          {/* Step 3 */}
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-300 bg-white text-sm font-semibold text-slate-400">
+              3
+            </div>
+
+            <span className="text-sm font-medium text-slate-400">
+              Payment
+            </span>
+          </div>
+        </div>
+
+        {/* Main layout */}
+        <div className="grid items-start gap-6 lg:grid-cols-[1fr_400px]">
+          {/* Product card */}
+          <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+            {/* Card header */}
+            <div className="border-b border-slate-100 px-6 py-5 sm:px-7">
+              <h2 className="text-lg font-bold text-slate-900">
+                Your product
+              </h2>
+
+              <p className="mt-1 text-sm text-slate-500">
+                Selected device and configuration
+              </p>
+            </div>
+
+            <div className="p-6 sm:p-7">
+              {/* Product information */}
+              <div className="flex flex-col gap-6 sm:flex-row">
+                {/* Image */}
+                <div className="flex h-56 w-full shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-slate-50 sm:h-60 sm:w-52">
+                  <img
+                    src={state.imageUrl}
+                    alt={state.productName}
+                    className="h-full w-full object-contain p-5"
+                  />
+                </div>
+
+                {/* Details */}
+                <div className="flex flex-1 flex-col justify-center">
+                  <div className="mb-3 inline-flex w-fit rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                    Smartphone
+                  </div>
+
+                  <h3 className="text-2xl font-bold tracking-tight text-slate-900">
+                    {state.productName}
+                  </h3>
+
+                  <p className="mt-2 text-sm text-slate-500">
+                    {state.variantColor} · {state.storage}
+                  </p>
+
+                  <div className="mt-6">
+                    <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+                      Product price
+                    </p>
+
+                    <p className="mt-1 text-2xl font-extrabold text-slate-900">
+                      {formatPrice(state.price)}
+                    </p>
+                  </div>
+
+                  <Link
+                    to="/"
+                    className="mt-5 inline-flex w-fit items-center gap-2 text-sm font-semibold text-blue-600 transition hover:text-blue-700"
+                  >
+                    ← Change selection
+                  </Link>
+                </div>
               </div>
 
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">
-                  {state.productName}
-                </h3>
+              {/* Product highlights */}
+              <div className="mt-7 grid grid-cols-1 gap-3 border-t border-slate-100 pt-6 sm:grid-cols-3">
+                <div className="rounded-2xl bg-slate-50 p-4">
+                  <div className="text-lg">📱</div>
 
-                <p className="mt-2 text-gray-600">
-                  {state.variantColor} · {state.storage}
-                </p>
+                  <p className="mt-2 text-xs font-medium text-slate-400">
+                    Configuration
+                  </p>
 
-                <p className="mt-4 text-xl font-bold text-gray-900">
-                  ₹{state.price.toLocaleString("en-IN")}
-                </p>
+                  <p className="mt-1 text-sm font-semibold text-slate-800">
+                    {state.variantColor}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl bg-slate-50 p-4">
+                  <div className="text-lg">💾</div>
+
+                  <p className="mt-2 text-xs font-medium text-slate-400">
+                    Storage
+                  </p>
+
+                  <p className="mt-1 text-sm font-semibold text-slate-800">
+                    {state.storage}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl bg-slate-50 p-4">
+                  <div className="text-lg">🛡️</div>
+
+                  <p className="mt-2 text-xs font-medium text-slate-400">
+                    Purchase
+                  </p>
+
+                  <p className="mt-1 text-sm font-semibold text-slate-800">
+                    EMI eligible
+                  </p>
+                </div>
               </div>
             </div>
           </section>
 
           {/* EMI summary */}
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-gray-900">
-              EMI summary
-            </h2>
+          <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+            {/* Card header */}
+            <div className="border-b border-slate-100 px-6 py-5">
+              <h2 className="text-lg font-bold text-slate-900">
+                EMI summary
+              </h2>
 
-            <div className="mt-6 rounded-xl bg-blue-50 p-5">
-              <p className="text-sm text-gray-500">
-                Monthly payment
-              </p>
-
-              <p className="mt-1 text-3xl font-bold text-blue-700">
-                ₹{state.monthlyPayment.toLocaleString("en-IN")}
-                <span className="text-sm font-normal text-gray-500">
-                  {" "}
-                  / month
-                </span>
+              <p className="mt-1 text-sm text-slate-500">
+                Your selected payment plan
               </p>
             </div>
 
-            <div className="mt-5 divide-y divide-gray-100">
-              <div className="flex justify-between py-3">
-                <span className="text-gray-500">Tenure</span>
-                <span className="font-medium text-gray-900">
-                  {state.tenureMonths} months
-                </span>
+            <div className="p-6">
+              {/* Monthly payment */}
+              <div className="rounded-2xl bg-blue-50 p-5">
+                <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
+                  Monthly payment
+                </p>
+
+                <div className="mt-2 flex items-baseline gap-2">
+                  <span className="text-3xl font-extrabold tracking-tight text-slate-900">
+                    {formatPrice(state.monthlyPayment)}
+                  </span>
+
+                  <span className="text-sm font-medium text-slate-500">
+                    / month
+                  </span>
+                </div>
+
+                <p className="mt-2 text-sm text-slate-500">
+                  for {state.tenureMonths} months
+                </p>
               </div>
 
-              <div className="flex justify-between py-3">
-                <span className="text-gray-500">Interest rate</span>
-                <span className="font-medium text-gray-900">
-                  {state.interestRate}%
-                </span>
+              {/* EMI details */}
+              <div className="mt-5 divide-y divide-slate-100">
+                {/* Product price */}
+                <div className="flex items-center justify-between py-4">
+                  <span className="text-sm text-slate-500">
+                    Product price
+                  </span>
+
+                  <span className="text-sm font-semibold text-slate-900">
+                    {formatPrice(state.price)}
+                  </span>
+                </div>
+
+                {/* Tenure */}
+                <div className="flex items-center justify-between py-4">
+                  <span className="text-sm text-slate-500">
+                    Tenure
+                  </span>
+
+                  <span className="text-sm font-semibold text-slate-900">
+                    {state.tenureMonths} months
+                  </span>
+                </div>
+
+                {/* Interest */}
+                <div className="flex items-center justify-between py-4">
+                  <span className="text-sm text-slate-500">
+                    Interest rate
+                  </span>
+
+                  <span
+                    className={`text-sm font-semibold ${
+                      state.interestRate === 0
+                        ? "text-green-600"
+                        : "text-slate-900"
+                    }`}
+                  >
+                    {state.interestRate === 0
+                      ? "0% — No interest"
+                      : `${state.interestRate}%`}
+                  </span>
+                </div>
+
+                {/* Cashback */}
+                <div className="flex items-center justify-between py-4">
+                  <span className="text-sm text-slate-500">
+                    Cashback
+                  </span>
+
+                  <span className="text-sm font-bold text-green-600">
+                    {formatPrice(state.cashback)}
+                  </span>
+                </div>
               </div>
 
-              <div className="flex justify-between py-3">
-                <span className="text-gray-500">Cashback</span>
-                <span className="font-semibold text-green-600">
-                  ₹{state.cashback.toLocaleString("en-IN")}
-                </span>
+              {/* Cashback banner */}
+              <div className="mt-2 flex items-start gap-3 rounded-2xl border border-green-100 bg-green-50 p-4">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-100 text-sm">
+                  🎁
+                </div>
+
+                <div>
+                  <p className="text-sm font-bold text-green-800">
+                    You're getting {formatPrice(state.cashback)} cashback
+                  </p>
+
+                  <p className="mt-1 text-xs leading-5 text-green-700">
+                    Cashback will be applied according to the selected EMI
+                    offer.
+                  </p>
+                </div>
               </div>
+
+              {/* CTA */}
+              <button
+                type="button"
+                onClick={() => {
+                  // Payment functionality is intentionally outside
+                  // the scope of this assignment.
+                }}
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-6 py-4 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md active:scale-[0.99]"
+              >
+                Continue
+                <span className="text-base">→</span>
+              </button>
+
+              <p className="mt-3 text-center text-xs leading-5 text-slate-400">
+                Payment flow is not included in this demo
+              </p>
             </div>
-
-            <button
-              type="button"
-              className="mt-6 w-full rounded-xl bg-blue-600 px-6 py-4 font-semibold text-white transition hover:bg-blue-700 active:scale-[0.99]"
-            >
-              Continue
-            </button>
           </section>
         </div>
 
+        {/* Trust cards */}
+        <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          {/* Flexible EMI */}
+          <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-lg">
+              💳
+            </div>
+
+            <div>
+              <p className="text-sm font-bold text-slate-800">
+                Flexible EMI
+              </p>
+
+              <p className="mt-0.5 text-xs text-slate-400">
+                Choose what works for you
+              </p>
+            </div>
+          </div>
+
+          {/* Secure */}
+          <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-50 text-lg">
+              🔒
+            </div>
+
+            <div>
+              <p className="text-sm font-bold text-slate-800">
+                Secure checkout
+              </p>
+
+              <p className="mt-0.5 text-xs text-slate-400">
+                Your selection is protected
+              </p>
+            </div>
+          </div>
+
+          {/* Cashback */}
+          <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-lg">
+              🎁
+            </div>
+
+            <div>
+              <p className="text-sm font-bold text-slate-800">
+                Cashback
+              </p>
+
+              <p className="mt-0.5 text-xs text-slate-400">
+                Enjoy your selected offer
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Back */}
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="text-sm font-medium text-gray-500 hover:text-blue-600"
+        <div className="mt-7">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="text-sm font-semibold text-slate-500 transition hover:text-blue-600"
           >
-            ← Back to products
-          </Link>
+            ← Back to product
+          </button>
         </div>
       </div>
     </main>
